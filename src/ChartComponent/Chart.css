@@ -1,0 +1,30 @@
+.grid line {
+    stroke: rgba(255, 255, 255, 0.1);
+  }
+  
+  .grid path {
+    stroke-width: 0;
+  }
+  
+  .domain {
+    stroke: rgba(255, 255, 255, 0.2);
+  }
+  
+  .tick text {
+    fill: #787b86;
+    font-size: 11px;
+  }
+
+  .candlestick {
+    transition: transform 0.3s ease;
+  }
+  
+  .scroll-buttons text {
+    font-size: 24px;
+    font-weight: bold;
+    transition: opacity 0.2s ease;
+  }
+  
+  .scroll-buttons text:hover {
+    opacity: 0.7;
+  }

@@ -1,0 +1,124 @@
+.hover-container {
+    position: relative;
+    padding: 20px;
+    display: inline-block;
+  }
+  
+  .candlestick-bar {
+    width: 2px;
+    height: 100px;
+    background-color: rgba(255, 255, 255, 0.1);
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .candlestick-bar:hover {
+    background-color: rgba(41, 98, 255, 0.3);
+  }
+  
+  .price-point {
+    width: 8px;
+    height: 8px;
+    background-color: #2962FF;
+    border-radius: 50%;
+    position: absolute;
+    left: -3px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  .tooltip-card {
+    position: absolute;
+    left: 50%;
+    top: -10px;
+    transform: translateX(-50%) translateY(-100%);
+    background-color: rgba(30, 34, 45, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 12px;
+    min-width: 150px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  .tooltip-card.visible {
+    opacity: 1;
+    visibility: visible;
+    top: -20px;
+  }
+  
+  .tooltip-header {
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 8px;
+  }
+  
+  .date {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .price-row, .volume-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 4px 0;
+  }
+  
+  .label {
+    color: #808a9d;
+    font-size: 12px;
+    font-weight: 500;
+    width: 30px;
+  }
+  
+  .value {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: 'Monaco', monospace;
+  }
+  
+  /* Animation for the tooltip appearance */
+  @keyframes tooltipAppear {
+    from {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-90%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-100%);
+    }
+  }
+  
+  .tooltip-card.visible {
+    animation: tooltipAppear 0.2s ease forwards;
+  }
+  
+  /* Crosshair effect */
+  .hover-container:hover::before,
+  .hover-container:hover::after {
+    content: '';
+    position: absolute;
+    background-color: rgba(41, 98, 255, 0.2);
+    pointer-events: none;
+  }
+  
+  .hover-container:hover::before {
+    left: 0;
+    right: 0;
+    height: 1px;
+    top: 50%;
+  }
+  
+  .hover-container:hover::after {
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    left: 50%;
+  }

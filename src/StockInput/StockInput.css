@@ -1,0 +1,127 @@
+.stock-input-container {
+    padding: 20px;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .stock-input-form {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  
+  .input-wrapper {
+    position: relative;
+    flex: 1;
+  }
+  
+  .stock-input {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 16px;
+    background-color: #1e222d;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    transition: all 0.3s ease;
+  }
+  
+  .input-border {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #2962FF, #26a69a);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+  }
+  
+  .input-wrapper.focused .input-border {
+    width: 100%;
+  }
+  
+  .stock-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(41, 98, 255, 0.1);
+  }
+  
+  .submit-button {
+    padding: 12px 24px;
+    background: #2962FF;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .submit-button:hover {
+    background: #1e4bd8;
+    transform: translateY(-1px);
+  }
+  
+  .submit-button:active {
+    transform: translateY(1px);
+  }
+  
+  .submit-button:disabled {
+    background: #1e222d;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  .button-content {
+    transform: translateX(0);
+    transition: transform 0.3s ease;
+  }
+  
+  .button-icon {
+    position: absolute;
+    right: -20px;
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+  
+  .submit-button:hover .button-content {
+    transform: translateX(-10px);
+  }
+  
+  .submit-button:hover .button-icon {
+    right: 24px;
+    opacity: 1;
+  }
+  
+  /* Add subtle glow effect on focus */
+  .input-wrapper.focused .stock-input {
+    box-shadow: 0 0 15px rgba(41, 98, 255, 0.1);
+  }
+  
+  /* Placeholder styling */
+  .stock-input::placeholder {
+    color: #6b7280;
+    transition: all 0.3s ease;
+  }
+  
+  .stock-input:focus::placeholder {
+    opacity: 0.7;
+    transform: translateX(5px);
+  }
+  
+  /* Dark mode optimization */
+  @media (prefers-color-scheme: dark) {
+    .stock-input {
+      background-color: #1e222d;
+    }
+    
+    .stock-input::placeholder {
+      color: #4a5568;
+    }
+  }
