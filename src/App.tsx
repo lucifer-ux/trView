@@ -1,23 +1,29 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import StockInput from './StockInput/StockInput';
 import Chart from './ChartComponent/Chart.tsx';
+
 
 const App: FC = () => {
   type StockSubmitHandler = (symbol: string) => void;
   const handleStockSubmit: StockSubmitHandler = (symbol : String) => {
-    console.log('Searching for:', symbol);
+  };
+  const [stockHistoryToMap, setStockHistoryToMap] = useState<any[]>([]);
+
+  const handleStockHistoryUpdate = (newStockHistory: any[]) => {
+    setStockHistoryToMap(newStockHistory);
   };
 
   return (
-    <div style={{
+    <div style={{   
       backgroundColor: '#131722',
       minHeight: '100vh',
+      minWidth: '100vw',
       display: 'flex',
       flexDirection: 'column',
       padding: '20px'
     }}>
-      <StockInput onSubmit={handleStockSubmit} />
-      <Chart />
+      <StockInput onStockHistoryUpdate={handleStockHistoryUpdate} onSubmit={handleStockSubmit} />
+      { stockHistoryToMap.length !== 0 && <Chart dataResponse = {stockHistoryToMap} />} 
     </div>
   );
 };

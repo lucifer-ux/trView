@@ -1,46 +1,108 @@
 import { useState, useEffect, useRef } from "react";
 import "./StockInput.css";
-import { fetchStockHistory } from "../../TestingENV/BackendAPI/APIcall.js";
+import { fetchStockHistory, fetchStockNames } from "../../TestingENV/BackendAPI/APIcall.js";
 import PopupFilter from "../PopupFilter/PopupFilter.js";
 
 interface StockInputProps {
   onSubmit: (symbol: string, filter: string) => void;
+  onStockHistoryUpdate: (stockHistory: any[]) => void;
 }
 
-const StockInput = ({ onSubmit }: StockInputProps) => {
+const StockInput = ({onStockHistoryUpdate, onSubmit }: StockInputProps) => {
   const [symbol, setSymbol] = useState("");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState<string>("All");
-  const popupRef = useRef<HTMLDivElement>(null); // Ref for detecting clicks outside
+  const [results, setResults] = useState<any[]>([]);
+  const popupRef = useRef<HTMLDivElement>(null);
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [activeIndex, setActiveIndex] = useState<number>(-1);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
-        setIsPopupOpen(false); // Close popup if click is outside
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key === "k") {
+        event.preventDefault();
+        setIsPopupOpen(true);
+        inputRef.current?.focus();
+      }
+      else if(event.key === "Escape") {
+        event.preventDefault();
+        setIsPopupOpen(false);
+        inputRef.current?.blur();
+      }
+      else  if (results.length === 0) return;
+    
+        else if (event.key === "ArrowDown") {
+          event.preventDefault();
+          setActiveIndex((prevIndex) => (prevIndex + 1) % results.length);
+        } else if (event.key === "ArrowUp") {
+          event.preventDefault();
+          setActiveIndex((prevIndex) =>
+            prevIndex > 0 ? prevIndex - 1 : results.length - 1
+          );
+        } else if (event.key === "Enter" && activeIndex !== -1) {
+          event.preventDefault();
+          handleItemClick(results[activeIndex]); // Call the click handler
+        }
+    };
+
+    const handleClickOutside = (event: any) => {
+      if (
+        popupRef.current &&
+        !popupRef.current.contains(event.target) &&
+        inputRef.current &&
+        !inputRef.current.contains(event.target)
+      ) {
+        setIsPopupOpen(false); // Close only if clicking outside
       }
     };
 
-    if (isPopupOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+  useEffect(() => {
+    if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+
+    if (!symbol.trim()) {
+      setResults([]);
+      return;
     }
+    
+    debounceTimeout.current = setTimeout(async () => {
+      try {
+        const response = await fetchStockNames(symbol);
+        if (Array.isArray(response)) {
+          setResults(response);
+        } else {
+          console.error("Unexpected response format:", response);
+          setResults([]);
+        }
+      } catch (error) {
+        console.error("Error fetching stock history:", error);
+        setResults([]);
+      }
+    }, 500);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
     };
-  }, [isPopupOpen]);
+  }, [symbol]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const searchResult = await fetchStockHistory(symbol);
-    console.log(searchResult, "valueee");
-
     if (symbol.trim()) {
       onSubmit(symbol.toUpperCase(), selectedFilter);
       setSymbol("");
-      setIsPopupOpen(false); // Close popup on submit
     }
+  };
+
+  const handleItemClick = async (selectedItem: any) => {
+    const stockHistoryToMap = await fetchStockHistory(selectedItem?.instrument_key);
+    onStockHistoryUpdate(stockHistoryToMap);
   };
 
   return (
@@ -49,22 +111,19 @@ const StockInput = ({ onSubmit }: StockInputProps) => {
         <div className="input-wrapper">
           <input
             type="text"
+            ref = {inputRef}
             value={symbol}
             onChange={(e) => setSymbol(e.target.value)}
-            onFocus={() => setIsPopupOpen(true)} // Open popup on focus
-            placeholder="Enter stock symbol..."
+            onFocus={() => setIsPopupOpen(true)}
+            placeholder="Type Ctrl + k to search.."
             className="stock-input"
+            // onBlur={() => setTimeout(() => setIsPopupOpen(false), 150)}
           />
           <div className="input-border"></div>
         </div>
-        <button type="submit" className="submit-button" disabled={!symbol.trim()}>
-          <span className="button-content">Search</span>
-          <span className="button-icon">→</span>
-        </button>
       </form>
 
-      {/* Popup Filter (Only show when open) */}
-      {isPopupOpen && <PopupFilter selectedFilter={selectedFilter} onSelectFilter={setSelectedFilter} />}
+      {isPopupOpen && <PopupFilter onItemClick = {handleItemClick} results = {results} selectedFilter={selectedFilter} onSelectFilter={setSelectedFilter} />}     
     </div>
   );
 };

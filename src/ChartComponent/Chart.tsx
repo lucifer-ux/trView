@@ -1,28 +1,34 @@
 import { useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
-import mockData from "../../TestingENV/mockdata.json";
+// import mockData from "../../TestingENV/mockdata.json";
 
-const Chart = () => {
+interface ChartInterface {
+dataResponse : any[];
+}
+
+const Chart:  React.FC<ChartInterface> = ({ dataResponse }) => {
+  let dataToBeMapped = []
+  if (dataResponse.length != 0)
+  { dataToBeMapped = dataResponse.data.data.candles
+
+  }
+  else 
+  {
+   dataToBeMapped = []
+  }
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<echarts.ECharts | null>(null);
-
+  
   useEffect(() => {
     if (!chartRef.current) return;
 
     // Initialize chart
     chartInstance.current = echarts.init(chartRef.current);
-
     // Format data for ECharts
-    const data = mockData.map(item => ([
-      item.timestamp,
-      item.open,
-      item.close,
-      item.low,
-      item.high,
-      item.volume
-    ]));
-
-    // Chart options
+    const data = dataToBeMapped.map(item => (item.map(innerItem => (
+      innerItem
+    )))
+  );
     const options: echarts.EChartsOption = {
       backgroundColor: '#131722',
       animation: true,
@@ -114,23 +120,26 @@ const Chart = () => {
         {
           type: 'inside',
           xAxisIndex: [0, 1],
-          start: 50,
-          end: 100
+          start: 99,
+          end: 100,
+          zoomOnMouseWheel: false, 
+          moveOnMouseMove: true,
+          moveOnMouseWheel: true
         },
         {
           show: true,
           xAxisIndex: [0, 1],
           type: 'slider',
-          top: '85%',
-          start: 50,
-          end: 100
+          top: '65%',
+          start: 5,
+          end: 50
         }
       ],
       series: [
-        {
+        { 
           name: 'Candlestick',
           type: 'candlestick',
-          data: data.map(item => [item[1], item[2], item[3], item[4]]),
+          data: data.map(item => [item[1], item[4], item[3], item[2]]),
           itemStyle: {
             color: '#ef5350',
             color0: '#26a69a',
@@ -167,7 +176,7 @@ const Chart = () => {
       chartInstance.current?.dispose();
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [dataResponse]);
 
   return (
     <div 
@@ -183,4 +192,4 @@ const Chart = () => {
   );
 };
 
-export default Chart;
+export default Chart; 

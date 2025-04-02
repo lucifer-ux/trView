@@ -10,7 +10,7 @@ const fetchStockNames = async (name) => {
     { key: "value" }, 
     { headers: { "Content-Type": "application/json" } }
   );
-  return response.data[0].instrument_key;
+  return response.data;
 }
 catch(e) 
 {
@@ -18,16 +18,29 @@ catch(e)
 }
 };
 
-const fetchStockHistory = async (tradingSymbol) => {
-    const instrumentKey = await fetchStockNames (tradingSymbol);
+const getDates = ()  => {
+  const today = new Date();
+  const fourMonthsAgo = new Date();
+  fourMonthsAgo.setMonth(fourMonthsAgo.getMonth() - 4);
+  const formatDate = (date) =>
+    `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")}`;
+
+  return {
+    today: formatDate(today),
+    fourMonthsAgo: formatDate(fourMonthsAgo),
+  };
+};
+
+const fetchStockHistory = async (instrumentKey) => {
     if(instrumentKey) {
+    const {today, fourMonthsAgo} = getDates();
+    console.log(today, fourMonthsAgo,"dateeevaalluee")
   const response = await axios.get(
-    `https://api.upstox.com/v2/historical-candle/${instrumentKey}/1minute/2025-01-01`
+    `https://api.upstox.com/v2/historical-candle/${instrumentKey}/1minute/2025-03-31/2025-02-01`
   );
-  console.log(response.data, "ressponseeee");
   return response;
 }
-else return ""
+else return []
 };
 
 export {fetchStockNames, fetchStockHistory}
