@@ -1,6 +1,7 @@
+//@ts-nocheck
 import { useState, useEffect, useRef } from "react";
 import "./StockInput.css";
-import { fetchStockHistory, fetchStockNames } from "../../TestingENV/BackendAPI/APIcall.js";
+import {fetchStockNames, fetchStockHistory} from "../../TestingENV/BackendAPI/APIcall.ts"
 import PopupFilter from "../PopupFilter/PopupFilter.js";
 
 interface StockInputProps {

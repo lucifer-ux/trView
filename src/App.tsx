@@ -5,7 +5,8 @@ import Chart from './ChartComponent/Chart.tsx';
 
 const App: FC = () => {
   type StockSubmitHandler = (symbol: string) => void;
-  const handleStockSubmit: StockSubmitHandler = (symbol : String) => {
+   // @ts-ignore: Unreachable code error
+  const handleStockSubmit: StockSubmitHandler = (symbol : string) => {
   };
   const [stockHistoryToMap, setStockHistoryToMap] = useState<any[]>([]);
 

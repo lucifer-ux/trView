@@ -3,14 +3,11 @@ import "./PopupFilter.css";
 import Loader from "../assets/Loader.tsx"
 
 interface PopupFilterProps {
-  selectedFilter: string;
-  onSelectFilter: (filter: string) => void;
   results: any[];
   onItemClick: (selectedItem: any) => void;
 }
 
-const PopupFilter: React.FC<PopupFilterProps> = ({onItemClick, results, selectedFilter, onSelectFilter }) => {
-  const filters = ["All", "Trading Symbol", "Industry", "Stock Exchange"];
+const PopupFilter: React.FC<PopupFilterProps> = ({onItemClick, results }) => {
 
   return (
     <div className="popup-filter">

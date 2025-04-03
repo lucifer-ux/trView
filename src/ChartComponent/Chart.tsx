@@ -9,7 +9,9 @@ dataResponse : any[];
 const Chart:  React.FC<ChartInterface> = ({ dataResponse }) => {
   let dataToBeMapped = []
   if (dataResponse.length != 0)
-  { dataToBeMapped = dataResponse.data.data.candles
+  {
+     // @ts-ignore: Unreachable code error
+     dataToBeMapped = dataResponse.data.data.candles
 
   }
   else 
@@ -25,7 +27,7 @@ const Chart:  React.FC<ChartInterface> = ({ dataResponse }) => {
     // Initialize chart
     chartInstance.current = echarts.init(chartRef.current);
     // Format data for ECharts
-    const data = dataToBeMapped.map(item => (item.map(innerItem => (
+    const data = dataToBeMapped.map((item: any[]) => (item.map((innerItem: any) => (
       innerItem
     )))
   );
@@ -47,6 +49,7 @@ const Chart:  React.FC<ChartInterface> = ({ dataResponse }) => {
         textStyle: {
           color: '#fff'
         },
+         // @ts-ignore: Unreachable code error
         position: function (pos, params, el, elRect, size) {
           const obj: Record<string, number> = {};
           obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 60;
@@ -76,7 +79,7 @@ const Chart:  React.FC<ChartInterface> = ({ dataResponse }) => {
       xAxis: [
         {
           type: 'category',
-          data: data.map(item => item[0]),
+          data: data.map((item: any[]) => item[0]),
           boundaryGap: true,
           axisLine: { onZero: false },
           splitLine: { show: false },
@@ -89,7 +92,7 @@ const Chart:  React.FC<ChartInterface> = ({ dataResponse }) => {
         {
           type: 'category',
           gridIndex: 1,
-          data: data.map(item => item[0]),
+          data: data.map((item: any[]) => item[0]),
           boundaryGap: true,
           axisLine: { onZero: false },
           axisTick: { show: false },
@@ -139,7 +142,7 @@ const Chart:  React.FC<ChartInterface> = ({ dataResponse }) => {
         { 
           name: 'Candlestick',
           type: 'candlestick',
-          data: data.map(item => [item[1], item[4], item[3], item[2]]),
+          data: data.map((item: any[]) => [item[1], item[4], item[3], item[2]]),
           itemStyle: {
             color: '#ef5350',
             color0: '#26a69a',
@@ -152,7 +155,7 @@ const Chart:  React.FC<ChartInterface> = ({ dataResponse }) => {
           type: 'bar',
           xAxisIndex: 1,
           yAxisIndex: 1,
-          data: data.map((item, index) => ({
+          data: data.map((item: number[]) => ({
             value: item[5],
             itemStyle: {
               color: item[1] > item[2] ? '#ef5350' : '#26a69a',
